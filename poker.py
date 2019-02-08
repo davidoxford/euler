@@ -63,7 +63,7 @@ def checkPairings(hand):
     ranks = [card[0] for card in hand]  #Get list of ranks of current hand
 
     rank_counts = {ranks[0] : 1}  #Count the first card
-    for x in range(1, len(ranks)-1):
+    for x in range(1, len(ranks)):
         cur_rank = ranks[x]
         if cur_rank in rank_counts.keys():
             rank_counts[cur_rank] = rank_counts[cur_rank] + 1
@@ -71,6 +71,16 @@ def checkPairings(hand):
             rank_counts[cur_rank] = 1
 
     return rank_counts
+
+#-------------------------------------------------------------------
+def isFourOfAKind(hand):
+    pairings = checkPairings(hand)  #Get dict of rank / counts
+
+    for rank in pairings:
+        if pairings[rank] == 4:   #If that rank has four cards in the pairing dict
+            return rank
+
+    return False
 
 #-------------------------------------------------------------------
 
@@ -120,3 +130,6 @@ print ('Royal Flush?', straight)
 
 pairings = checkPairings(ha1)
 print ('Pairings:', pairings)
+
+foak = isFourOfAKind(ha1)
+print ('Four of a Kind?', foak)
