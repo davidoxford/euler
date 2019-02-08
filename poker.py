@@ -15,11 +15,21 @@ def cardval(cardnum):
 #-------------------------------------------------------------------
 def isFlush(hand):
     suits = [card[1] for card in hand]
-    suitset = set(suits)
+    suitset = set(suits)    #sets remove duplicates
     if len(suitset) == 1:
         return True
     else:
         return False
+
+#-------------------------------------------------------------------
+def isStraight(hand):
+    ranks = [card[0] for card in hand]  #Hand is assumed to be sorted in desc order
+
+    for x in range(len(ranks)-1):    #Loop through the first four cards, looking at it and the next card
+        if ranks[x+1] != ranks[x]-1: #If the next card isn't one less than this card, it ain't a straight
+            return False
+
+    return True
 
 #-------------------------------------------------------------------
 
@@ -56,4 +66,7 @@ print(ha1)
 #print(ha2)
 
 flush = isFlush(ha1)
-print (flush)
+print ('Flush?', flush)
+
+straight = isStraight(ha1)
+print ('Straigh?', straight)
