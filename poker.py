@@ -86,7 +86,7 @@ def isFourOfAKind(hand):
 def isFullHouse(hand):
     pairings = checkPairings(hand)  #Get dict of rank / counts
 
-    if len(pairings) == 2:
+    if len(pairings) == 2:  #Full house will have two pairings, one with three cards, and one with two cards
         for rank in pairings:
             if pairings[rank] == 3:   #If that rank has three cards in the pairing dict
                 three_card_rank = rank
@@ -95,6 +95,17 @@ def isFullHouse(hand):
         return three_card_rank + (two_card_rank/100) #Return a value with the two-card grouping as a decimal that
                                                      #allows easy comparison when the three-card grouping is the same in both hands
                                                      #e.g., 8's over 5's is returned as 8.05, which would beat 8's over 2's (8.05 > 8.02)
+    else:
+        return False
+
+#-------------------------------------------------------------------
+def isThreeOfAKind(hand):
+    pairings = checkPairings(hand)  #Get dict of rank / counts
+
+    if len(pairings) == 3:  #Three of a kind will have one rank with three values, and two more with one each, for a total of three ranks in the list
+        for rank in pairings:
+            if pairings[rank] == 3:   #If that rank has three cards in the pairing dict
+                return rank
     else:
         return False
 
@@ -152,3 +163,6 @@ print ('Four of a Kind?', foak)
 
 fullhouse = isFullHouse(ha1)
 print ('Full House?', fullhouse)
+
+toak = isThreeOfAKind(ha1)
+print ('Three of a Kind?', toak)
