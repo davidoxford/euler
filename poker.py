@@ -12,6 +12,14 @@ def cardval(cardnum):
     else:
         pval = int(cardnum)
     return pval
+#-------------------------------------------------------------------
+def isFlush(hand):
+    suits = [card[1] for card in hand]
+    suitset = set(suits)
+    if len(suitset) == 1:
+        return True
+    else:
+        return False
 
 #-------------------------------------------------------------------
 
@@ -36,13 +44,16 @@ for card in hand1:
     p2 = card[1:2]
     ha1.append((p1,p2))
 
-for card in hand2:
-    p1 = cardval(card[0:1])
-    p2 = card[1:2]
-    ha2.append((p1,p2))	
+#for card in hand2:
+#    p1 = cardval(card[0:1])
+#    p2 = card[1:2]
+#    ha2.append((p1,p2))
 
 ha1.sort(reverse=True)
-ha2.sort(reverse=True)
+#ha2.sort(reverse=True)
 
 print(ha1)
-print(ha2)
+#print(ha2)
+
+flush = isFlush(ha1)
+print (flush)
