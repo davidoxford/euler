@@ -125,6 +125,21 @@ def isTwoPair(hand):
         return False
 
 #-------------------------------------------------------------------
+def isOnePair(hand):
+    pairings = checkPairings(hand)  #Get dict of rank / counts
+
+    if len(pairings) == 4:  #One pair will have one rank with two values, and three more with one each, for a total of four ranks in the list
+        for rank in pairings:
+            if pairings[rank] == 2:   #If that rank has two cards in the pairing dict
+                return rank
+
+    return False
+
+#-------------------------------------------------------------------
+def highestHand(hand1, hand2):
+    pass
+
+#-------------------------------------------------------------------
 
 f = open('poker.txt')
 hands = f.readline()
@@ -184,3 +199,6 @@ print ('Three of a Kind?', toak)
 
 twopair = isTwoPair(ha1)
 print ('Two Pair?', twopair)
+
+onepair = isOnePair(ha1)
+print ('One Pair?', onepair)
