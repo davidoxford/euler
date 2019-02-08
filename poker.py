@@ -32,6 +32,24 @@ def isStraight(hand):
     return True
 
 #-------------------------------------------------------------------
+def isStraightFlush(hand):
+    if isStraight(hand) and isFlush(hand):
+        return True
+    else:
+        return False
+
+#-------------------------------------------------------------------
+def isRoyalFlush(hand):
+    first_card = hand[0]        #Look at the first card
+    if first_card[0] != 14:     #If the rank of the first card isn't 14 (Ace), it's not a royal flush
+        return False
+
+    if isStraight(hand) and isFlush(hand) :
+        return True
+    else:
+        return False
+
+#-------------------------------------------------------------------
 
 f = open('poker.txt')
 hands = f.readline()
@@ -70,3 +88,9 @@ print ('Flush?', flush)
 
 straight = isStraight(ha1)
 print ('Straigh?', straight)
+
+straight = isStraightFlush(ha1)
+print ('Straight Flush?', straight)
+
+straight = isRoyalFlush(ha1)
+print ('Royal Flush?', straight)
