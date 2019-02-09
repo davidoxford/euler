@@ -136,69 +136,105 @@ def isOnePair(hand):
     return False
 
 #-------------------------------------------------------------------
-def highestHand(hand1, hand2):
-    pass
+def getHandRankAndValue(hand):
+    # Return a list of the form [Hand Rank, Hand Value]
+    # Hand rank return values
+    # 1 : High Card
+    # 2 : One Pair
+    # 3 : Two Pairs
+    # 4 : Three of a Kind
+    # 5 : Straight
+    # 6 : Flush
+    # 7 : Full House
+    # 8 : Four of a Kind
+    # 9 : Straight Flush
+    # 10: Royal Flush
+
+    if isRoyalFlush(hand):
+        return [10, isRoyalFlush(hand)]
+
+    if isStraightFlush(hand):
+        return [9, isStraight(hand)]
+
+    if isFourOfAKind(hand):
+        return [8, isFourOfAKind(hand)]
+
+    if isFullHouse(hand):
+        return [7, isFullHouse(hand)]
+
+    if isFlush(hand):
+        return [6, isFlush(hand)]
+
+    if isStraight(hand):
+        return [5, isStraight(hand)]
+
+    if isThreeOfAKind(hand):
+        return [4, isThreeOfAKind(hand)]
+
+    if isTwoPair(hand):
+        return [3, isTwoPair(hand)]
+
+    if isOnePair(hand):
+        return [2, isOnePair(hand)]
+
+    # Must be just a high card, so return the first value of the first element of hand (ie, the highest card, as they are sorted desc)
+    return [1, hand[0][0]]
+
+#-------------------------------------------------------------------
+def whoWon(hands):
+    player1_resuluts = getHandRankAndValue(hands[0])
+    player2_results = getHandRankAndValue(hands[1])
+
+    if player1_resuluts[0] > player2_results[0]:
+        return 1
+    elif player2_results[0] > player1_resuluts[0]:
+        return 2
+    elif player1_resuluts[1] > player2_results[1]:
+        return 1
+    elif player2_results[1] > player1_resuluts[1]:
+        return 2
+    else:
+        return 999
 
 #-------------------------------------------------------------------
 
-f = open('poker.txt')
-hands = f.readline()
+f = open('poker2.txt')
+for game in f:
+
+    #Tokenize raw game data
+
+    raw_hand=[]
+    # Parse player 1's hand
+    raw_hand.append(game[0:14])
+    raw_hand[0] = raw_hand[0].split(' ')
+    #Parse player 2's hand
+    raw_hand.append(game[15:29])
+    raw_hand[1] = raw_hand[1].split(' ')
+
+    hands=[ [] for x in range(len(raw_hand))]  #Initialize the hands list to the total number of players
+
+
+    for player in range(len(raw_hand)):
+        for card in raw_hand[player]:
+            p1 = cardval(card[0:1])
+            p2 = card[1:2]
+            hands[player].append((p1,p2))
+
+    #print(hands)
+
+    hands[0].sort(reverse=True)
+    hands[1].sort(reverse=True)
+
+    #print(hands)
+    #print(hands[0])
+    #print(hands[1])
+
+    winner = whoWon(hands)
+    print(hands[0], "-->", getHandRankAndValue(hands[0]))
+    print(hands[1], "-->", getHandRankAndValue(hands[1]))
+    print('----- Player', winner, 'won')
+    print('')
+
+
+
 f.close()
-
-hand1 = hands[0:14]
-hand1 = hand1.split(' ')
-
-hand2 = hands[15:29]
-hand2 = hand2.split(' ')
-
-#print (hand1)
-#print (hand2)
-
-ha1=[]
-ha2=[]
-
-for card in hand1:
-    p1 = cardval(card[0:1])
-    p2 = card[1:2]
-    ha1.append((p1,p2))
-
-#for card in hand2:
-#    p1 = cardval(card[0:1])
-#    p2 = card[1:2]
-#    ha2.append((p1,p2))
-
-ha1.sort(reverse=True)
-#ha2.sort(reverse=True)
-
-print(ha1)
-#print(ha2)
-
-flush = isFlush(ha1)
-print ('Flush?', flush)
-
-straight = isStraight(ha1)
-print ('Straigh?', straight)
-
-straight = isStraightFlush(ha1)
-print ('Straight Flush?', straight)
-
-straight = isRoyalFlush(ha1)
-print ('Royal Flush?', straight)
-
-pairings = checkPairings(ha1)
-print ('Pairings:', pairings)
-
-foak = isFourOfAKind(ha1)
-print ('Four of a Kind?', foak)
-
-fullhouse = isFullHouse(ha1)
-print ('Full House?', fullhouse)
-
-toak = isThreeOfAKind(ha1)
-print ('Three of a Kind?', toak)
-
-twopair = isTwoPair(ha1)
-print ('Two Pair?', twopair)
-
-onepair = isOnePair(ha1)
-print ('One Pair?', onepair)
