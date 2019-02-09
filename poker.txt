@@ -1,4 +1,14 @@
+8C 2S TC KH 8S 7D 2S 5D 3S AC #One Pair (8's)
+8C 8S KC 8H 2S 7D 2S 5D 3S AC #Three of a Kind (8's)
+8C 8S 2C KH 2S 7D 2S 5D 3S AC #Two Pair (8's and 2's)
+8C 8S 2C 8H 2S 7D 2S 5D 3S AC #Full House (8's and 2's)
+8C 8S KC 8H KS 7D 2S 5D 3S AC #Full House (8's and K's)
+8C 8S KC 8H 8D 7D 2S 5D 3S AC #Four of a kind (8's)
+8C TS KC 8H 4S 7D 2S 5D 3S AC #One pair (8's)
 8C TS KC 9H 4S 7D 2S 5D 3S AC
+AS TS QS KS JS 7D 2S 5D 3S AC #royal flush
+8C TS QC 9H JS 7D 2S 5D 3S AC #straight
+8S TS QS 9S JS 7D 2S 5D 3S AC #straight flush
 5C AD 5D AC 9C 7C 5H 8D TD KS
 3H 7H 6S KC JS QH TD JC 2D 8S
 TH 8H 5C QS TC 9H 4D JC KS JS
