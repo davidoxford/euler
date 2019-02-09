@@ -186,19 +186,21 @@ def whoWon(hands):
     player2_results = getHandRankAndValue(hands[1])
 
     if player1_resuluts[0] > player2_results[0]:
-        return 1
+        return 0
     elif player2_results[0] > player1_resuluts[0]:
-        return 2
-    elif player1_resuluts[1] > player2_results[1]:
         return 1
+    elif player1_resuluts[1] > player2_results[1]:
+        return 0
     elif player2_results[1] > player1_resuluts[1]:
-        return 2
+        return 1
     else:
         return 999
 
 #-------------------------------------------------------------------
 
-f = open('poker2.txt')
+score=[0,0]
+
+f = open('p054_poker.txt')
 for game in f:
 
     #Tokenize raw game data
@@ -230,11 +232,14 @@ for game in f:
     #print(hands[1])
 
     winner = whoWon(hands)
-    print(hands[0], "-->", getHandRankAndValue(hands[0]))
-    print(hands[1], "-->", getHandRankAndValue(hands[1]))
-    print('----- Player', winner, 'won')
-    print('')
+    if winner != 999:
+        score[winner] = score[winner] + 1
+    else:
+        print(hands[0], "-->", getHandRankAndValue(hands[0]))
+        print(hands[1], "-->", getHandRankAndValue(hands[1]))
+        print('-----')
+        print('')
 
-
+print (score)
 
 f.close()
