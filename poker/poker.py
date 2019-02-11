@@ -2,7 +2,7 @@
 # Problem 54 - David Oxford - 2/8/2019
 #-------------------------------------------------------------------
 
-def cardval(cardnum):
+def cardVal(cardnum):
     if cardnum == 'T':
         pval = 10
     elif cardnum == "J":
@@ -140,6 +140,27 @@ def isOnePair(hand):
     return False
 
 #-------------------------------------------------------------------
+def highestCard(hands):
+
+    # Build list of ranks for each hand
+    ranks = []
+    for x in range(len(hands)):
+        ranklist = [card[0] for card in hands[x]]
+        ranks.append(ranklist)
+
+    best_card = -1
+    best_hand = -1
+    # Loop through all cards
+    for card in range(5):
+        for hand_num in range(len(ranks)):
+            hand = ranks[hand_num]
+            if hand[card] > best_card:
+                best_card = hand[card]
+                best_hand = hand_num
+
+    return best_hand
+
+#-------------------------------------------------------------------
 def getHandRankAndValue(hand):
     # Return a list of the form [Hand Rank, Hand Value]
     # Hand rank return values
@@ -198,52 +219,61 @@ def whoWon(hands):
     elif player2_results[1] > player1_resuluts[1]:
         return 1
     else:
-        return 999
+        return highestCard(hands)
 
 #-------------------------------------------------------------------
 
-score=[0,0]
+NUM_PLAYERS = 2
+
+# Initialize score (count of games won) to 0 for all players
+score=[]
+for x in range(NUM_PLAYERS):
+    score.append(0)
 
 f = open('p054_poker.txt')
 for game in f:
 
+    raw_hand=[]
+
     #Tokenize raw game data
 
-    raw_hand=[]
     # Parse player 1's hand
     raw_hand.append(game[0:14])
     raw_hand[0] = raw_hand[0].split(' ')
+
     #Parse player 2's hand
     raw_hand.append(game[15:29])
     raw_hand[1] = raw_hand[1].split(' ')
 
     hands=[ [] for x in range(len(raw_hand))]  #Initialize the hands list to the total number of players
 
-
+    # Build hands as list of tuples of the form: [[(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
     for player in range(len(raw_hand)):
         for card in raw_hand[player]:
-            p1 = cardval(card[0:1])
-            p2 = card[1:2]
-            hands[player].append((p1,p2))
+            c1 = cardVal(card[0:1])         # First character is the rank (value) of the card. Assign number 2-14 (Ace = 14)
+            c2 = card[1:2]                  # Second character is the suit
+            hands[player].append((c1,c2))   # Add this card to 'player' hand
 
-    #print(hands)
-
-    hands[0].sort(reverse=True)
-    hands[1].sort(reverse=True)
-
-    #print(hands)
-    #print(hands[0])
-    #print(hands[1])
+    # Sort hands into desc order based on rank
+    for hand_num in range(len(hands)):
+        hands[hand_num].sort(reverse=True)
 
     winner = whoWon(hands)
-    if winner != 999:
+    if winner != -1:                        # If a good answer was obtained
         score[winner] = score[winner] + 1
-    else:
-        print(hands[0], "-->", getHandRankAndValue(hands[0]))
-        print(hands[1], "-->", getHandRankAndValue(hands[1]))
+    else:                                   # If case fell through to highestCard() and that failed to find a higest card
+        for hand in hands:
+            print(hand, "-->", getHandRankAndValue(hand))
         print('-----')
         print('')
 
-print (score)
-
 f.close()
+
+# Tell us who won!!!
+for player in range(NUM_PLAYERS):
+    print('Player', player+1, 'won', score[player], 'hands.')
+
+winner = score.index(max(score))        # Does not account for ties
+print('------')
+print ('Player', winner + 1, 'wins!')
+print('------')
