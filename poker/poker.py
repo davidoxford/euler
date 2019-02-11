@@ -207,6 +207,14 @@ def getHandRankAndValue(hand):
 
 #-------------------------------------------------------------------
 def whoWon(hands):
+    global NUM_PLAYERS
+
+    # Returns a  list of lists of the form [ [rank,value] [rank,value] ] for all hands
+    player_results = [ getHandRankAndValue(hands[player]) for player in range(NUM_PLAYERS) ]
+
+    #print(hands)
+    #print(player_results)
+
     player1_resuluts = getHandRankAndValue(hands[0])
     player2_results = getHandRankAndValue(hands[1])
 
@@ -226,9 +234,7 @@ def whoWon(hands):
 NUM_PLAYERS = 2
 
 # Initialize score (count of games won) to 0 for all players
-score=[]
-for x in range(NUM_PLAYERS):
-    score.append(0)
+score = [ 0 for x in range(NUM_PLAYERS)]
 
 f = open('p054_poker.txt')
 for game in f:
@@ -266,6 +272,8 @@ for game in f:
             print(hand, "-->", getHandRankAndValue(hand))
         print('-----')
         print('')
+
+    break
 
 f.close()
 
