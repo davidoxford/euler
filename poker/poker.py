@@ -152,6 +152,9 @@ def highestCard(hands):
     best_hand = -1
     # Loop through all cards
     for card in range(5):
+        print('best_card:', best_card)
+        print('best_hand:', best_hand)
+
         for hand_num in range(len(ranks)):
             hand = ranks[hand_num]
             if hand[card] > best_card:
@@ -163,7 +166,7 @@ def highestCard(hands):
 #-------------------------------------------------------------------
 def getHandRankAndValue(hand):
     # Return a list of the form [Hand Rank, Hand Value]
-    # Hand rank return values
+    # Hand rank return values:
     # 1 : High Card
     # 2 : One Pair
     # 3 : Two Pairs
@@ -212,22 +215,39 @@ def whoWon(hands):
     # Returns a  list of lists of the form [ [rank,value] [rank,value] ] for all hands
     player_results = [ getHandRankAndValue(hands[player]) for player in range(NUM_PLAYERS) ]
 
-    #print(hands)
-    #print(player_results)
+    print(hands)
+    print(player_results)
 
-    player1_resuluts = getHandRankAndValue(hands[0])
-    player2_results = getHandRankAndValue(hands[1])
+    # Determine the highest rank of any hands
+    highest_rank = max(player[0] for player in player_results)
 
-    if player1_resuluts[0] > player2_results[0]:
-        return 0
-    elif player2_results[0] > player1_resuluts[0]:
-        return 1
-    elif player1_resuluts[1] > player2_results[1]:
-        return 0
-    elif player2_results[1] > player1_resuluts[1]:
-        return 1
+    # Build list of hands having the top rank (of the form [player#, hand rank, hand value])
+    top_ranked_hands = []
+    for player in range(len(player_results)):
+        if player_results[player][0] == highest_rank:
+            top_ranked_hands.append([player,player_results[player][0],player_results[player][1]])
+
+    if len(top_ranked_hands) == 1:  # Unique winner
+        return top_ranked_hands[0][0]   # Return the player number of the top-ranked hand
     else:
-        return highestCard(hands)
+        # Determine the highest value of top-ranked hands
+        highest_value = max(player[2] for player in top_ranked_hands)
+
+        # Build list of top-ranked hands having the top value (of the form [player#, hand value])
+        top_valued_hands = []
+        for player in range(len(top_ranked_hands)):
+            if top_ranked_hands[player][2] == highest_value:
+                top_valued_hands.append([player,top_ranked_hands[player][2]])
+
+        if len(top_valued_hands) == 1: # Unique winner
+            return top_valued_hands[0][0]   # Return the player number of the top-valued hand
+        else:    # Two or more hands have the same rank and same value
+            # Build list of hands of possible winners
+            possible_winning_hands = []
+            for player in top_valued_hands:
+                possible_winning_hands.append(hands[player[0]]) # Get the hand corresponding to the player #
+
+            return highestCard(possible_winning_hands)
 
 #-------------------------------------------------------------------
 
@@ -236,7 +256,8 @@ NUM_PLAYERS = 2
 # Initialize score (count of games won) to 0 for all players
 score = [ 0 for x in range(NUM_PLAYERS)]
 
-f = open('p054_poker.txt')
+#f = open('p054_poker.txt')
+f = open('poker2.txt')
 for game in f:
 
     raw_hand=[]
