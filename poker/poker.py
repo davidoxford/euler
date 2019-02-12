@@ -141,6 +141,7 @@ def isOnePair(hand):
 
 #-------------------------------------------------------------------
 def highestCard(hands):
+    # Assumes that there is a clear winner. Ties will return an arbitrary winner.
 
     # Build list of ranks for each hand
     ranks = []
@@ -156,7 +157,7 @@ def highestCard(hands):
 #-------------------------------------------------------------------
 def getHandRankAndValue(hand):
     # Return a list of the form [Hand Rank, Hand Value]
-    # Hand rank return values:
+    # Hand ranks:
     # 1 : High Card
     # 2 : One Pair
     # 3 : Two Pairs
@@ -240,52 +241,53 @@ def whoWon(hands):
             return highestCard(possible_winning_hands)
 
 #-------------------------------------------------------------------
+def main(game_file):
+    global NUM_PLAYERS
 
+    # Initialize score (count of games won) to 0 for all players
+    score = [ 0 for x in range(NUM_PLAYERS)]
+
+    f = open(game_file)
+    for game in f:
+
+        raw_hand=[]
+
+        #Tokenize raw game data
+        start_pos = 0
+        end_pos = 14
+        for player in range(NUM_PLAYERS):
+            raw_hand.append(game[start_pos:end_pos])
+            raw_hand[player] = raw_hand[player].split(' ')
+            start_pos += 15
+            end_pos += 15
+
+        hands=[ [] for x in range(len(raw_hand))]  #Initialize the hands list to the total number of players
+
+        # Build hands as list of tuples of the form: [[(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
+        for player in range(len(raw_hand)):
+            for card in raw_hand[player]:
+                c1 = cardVal(card[0:1])         # First character is the rank (value) of the card. Assign number 2-14 (Ace = 14)
+                c2 = card[1:2]                  # Second character is the suit
+                hands[player].append((c1,c2))   # Add this card to 'player' hand
+
+        # Sort hands into desc order based on rank
+        for hand_num in range(len(hands)):
+            hands[hand_num].sort(reverse=True)
+
+        winner = whoWon(hands)
+        score[winner] = score[winner] + 1   # Increment score of winning player
+
+    f.close()
+
+    # Report results
+    for player in range(NUM_PLAYERS):
+        print('Player', player+1, 'won', score[player], 'hands.')
+
+#-------------------------------------------------------------------
+
+# Define the total number of players per game in the input file
+# All games must have the same number of players
 NUM_PLAYERS = 2
 
-# Initialize score (count of games won) to 0 for all players
-score = [ 0 for x in range(NUM_PLAYERS)]
-
-f = open('p054_poker.txt')
-#f = open('poker2.txt')
-for game in f:
-
-    raw_hand=[]
-
-    #Tokenize raw game data
-
-    # Parse player 1's hand
-    raw_hand.append(game[0:14])
-    raw_hand[0] = raw_hand[0].split(' ')
-
-    #Parse player 2's hand
-    raw_hand.append(game[15:29])
-    raw_hand[1] = raw_hand[1].split(' ')
-
-    hands=[ [] for x in range(len(raw_hand))]  #Initialize the hands list to the total number of players
-
-    # Build hands as list of tuples of the form: [[(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
-    for player in range(len(raw_hand)):
-        for card in raw_hand[player]:
-            c1 = cardVal(card[0:1])         # First character is the rank (value) of the card. Assign number 2-14 (Ace = 14)
-            c2 = card[1:2]                  # Second character is the suit
-            hands[player].append((c1,c2))   # Add this card to 'player' hand
-
-    # Sort hands into desc order based on rank
-    for hand_num in range(len(hands)):
-        hands[hand_num].sort(reverse=True)
-
-    winner = whoWon(hands)
-    if winner != -1:                        # If a good answer was obtained
-        score[winner] = score[winner] + 1
-    else:                                   # If case fell through to highestCard() and that failed to find a higest card
-        for hand in hands:
-            print(hand, "-->", getHandRankAndValue(hand))
-        print('-----')
-        print('')
-
-f.close()
-
-# Report results
-for player in range(NUM_PLAYERS):
-    print('Player', player+1, 'won', score[player], 'hands.')
+# Execute main with name of the file to process
+main('p054_poker.txt')
