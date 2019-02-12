@@ -148,18 +148,8 @@ def highestCard(hands):
         ranklist = [card[0] for card in hands[x]]
         ranks.append(ranklist)
 
-    best_card = -1
-    best_hand = -1
-    # Loop through all cards
-    for card in range(5):
-        print('best_card:', best_card)
-        print('best_hand:', best_hand)
-
-        for hand_num in range(len(ranks)):
-            hand = ranks[hand_num]
-            if hand[card] > best_card:
-                best_card = hand[card]
-                best_hand = hand_num
+    best_card = max(hand for hand in ranks)
+    best_hand = ranks.index(best_card)
 
     return best_hand
 
@@ -215,8 +205,8 @@ def whoWon(hands):
     # Returns a  list of lists of the form [ [rank,value] [rank,value] ] for all hands
     player_results = [ getHandRankAndValue(hands[player]) for player in range(NUM_PLAYERS) ]
 
-    print(hands)
-    print(player_results)
+    #print(hands)
+    #print(player_results)
 
     # Determine the highest rank of any hands
     highest_rank = max(player[0] for player in player_results)
@@ -256,8 +246,8 @@ NUM_PLAYERS = 2
 # Initialize score (count of games won) to 0 for all players
 score = [ 0 for x in range(NUM_PLAYERS)]
 
-#f = open('p054_poker.txt')
-f = open('poker2.txt')
+f = open('p054_poker.txt')
+#f = open('poker2.txt')
 for game in f:
 
     raw_hand=[]
@@ -294,15 +284,8 @@ for game in f:
         print('-----')
         print('')
 
-    break
-
 f.close()
 
-# Tell us who won!!!
+# Report results
 for player in range(NUM_PLAYERS):
     print('Player', player+1, 'won', score[player], 'hands.')
-
-winner = score.index(max(score))        # Does not account for ties
-print('------')
-print ('Player', winner + 1, 'wins!')
-print('------')
