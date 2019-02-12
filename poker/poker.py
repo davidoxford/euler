@@ -2,27 +2,27 @@
 # Problem 54 - David Oxford - 2/8/2019
 #-------------------------------------------------------------------
 
-def cardVal(cardnum):
-    if cardnum == 'T':
-        pval = 10
-    elif cardnum == "J":
-        pval = 11
-    elif cardnum == "Q":
-        pval = 12
-    elif cardnum == "K":
-        pval = 13
-    elif cardnum == "A":
-        pval = 14
+def cardVal(card_num):
+    if card_num ==   'T':
+        return 10
+    elif card_num == 'J':
+        return 11
+    elif card_num == 'Q':
+        return 12
+    elif card_num == 'K':
+        return 13
+    elif card_num == 'A':
+        return 14
     else:
-        pval = int(cardnum)
-    return pval
+        return int(card_num)
+
 #-------------------------------------------------------------------
 def isFlush(hand):
-    first_card = hand[0]        #Look at the first card
-    first_card_rank = first_card[0]
+    first_card = hand[0]
+    first_card_rank = first_card[0] # Get value of the first (highest) card
 
     suits = [card[1] for card in hand]
-    suitset = set(suits)    #sets remove duplicates
+    suitset = set(suits)    # Sets remove duplicates
     if len(suitset) == 1:
         return first_card_rank
     else:
@@ -30,20 +30,20 @@ def isFlush(hand):
 
 #-------------------------------------------------------------------
 def isStraight(hand):
-    first_card = hand[0]        #Look at the first card
-    first_card_rank = first_card[0]
+    first_card = hand[0]
+    first_card_rank = first_card[0] # Get value of the first (highest) card
 
-    ranks = [card[0] for card in hand]  #Hand is assumed to be sorted in desc order
+    ranks = [card[0] for card in hand]  # Hand is assumed to be sorted in desc order
 
-    for x in range(len(ranks)-1):    #Loop through the first four cards, looking at it and the next card
-        if ranks[x+1] != ranks[x]-1: #If the next card isn't one less than this card, it ain't a straight
+    for x in range(len(ranks)-1):    # Loop through the first four cards, looking at it and the next card
+        if ranks[x+1] != ranks[x]-1: # If the next card isn't one less than this card, it ain't a straight
             return False
 
     return first_card_rank
 
 #-------------------------------------------------------------------
 def isStraightFlush(hand):
-    first_card = hand[0]        #Look at the first card
+    first_card = hand[0]        # Look at the first card
     first_card_rank = first_card[0]
 
     if isStraight(hand) and isFlush(hand):
@@ -53,8 +53,8 @@ def isStraightFlush(hand):
 
 #-------------------------------------------------------------------
 def isRoyalFlush(hand):
-    first_card = hand[0]        #Look at the first card
-    if first_card[0] != 14:     #If the rank of the first card isn't 14 (Ace), it's not a royal flush
+    first_card = hand[0]        # Look at the first card
+    if first_card[0] != 14:     # If the rank of the first card isn't 14 (Ace), it's not a royal flush
         return False
 
     if isStraight(hand) and isFlush(hand) :
@@ -64,77 +64,79 @@ def isRoyalFlush(hand):
 
 #-------------------------------------------------------------------
 def checkPairings(hand):
-    ranks = [card[0] for card in hand]  #Get list of ranks of current hand
+    ranks = [card[0] for card in hand]  # Get list of ranks of current hand
 
-    rank_counts = {ranks[0] : 1}  #Count the first card
-    for x in range(1, len(ranks)):  #Loop through the remaining card ranks
+    rank_counts = {ranks[0] : 1}  # Count the first card
+    for x in range(1, len(ranks)):  # Loop through the remaining card ranks
         cur_rank = ranks[x]
         if cur_rank in rank_counts.keys():
-            rank_counts[cur_rank] = rank_counts[cur_rank] + 1  #Increment the count for the current card rank
+            rank_counts[cur_rank] = rank_counts[cur_rank] + 1  # Increment the count for the current card rank
         else:
-            rank_counts[cur_rank] = 1   #Append a new entry with the current card's rank
+            rank_counts[cur_rank] = 1   # Append a new entry with the current card's rank
 
     return rank_counts
 
 #-------------------------------------------------------------------
 def isFourOfAKind(hand):
-    pairings = checkPairings(hand)  #Get dict of rank / counts
+    pairings = checkPairings(hand)  # Get dict of rank / counts
 
     for rank in pairings:
-        if pairings[rank] == 4:   #If that rank has four cards in the pairing dict
+        if pairings[rank] == 4:   # If that rank has four cards in the pairing dict
             return rank
 
     return False
 
 #-------------------------------------------------------------------
 def isFullHouse(hand):
-    pairings = checkPairings(hand)  #Get dict of rank / counts
+    pairings = checkPairings(hand)  # Get dict of rank / counts
 
-    if len(pairings) == 2:  #Full house will have two pairings, one with three cards, and one with two cards
+    if len(pairings) == 2:  # Full house will have two pairings, one with three cards, and one with two cards
         for rank in pairings:
-            if pairings[rank] == 3:   #If that rank has three cards in the pairing dict
+            if pairings[rank] == 3:   # If that rank has three cards in the pairing dict
                 three_card_rank = rank
-            else:                     #Rank having two cards in the pairing dict
+            else:                     # Rank having two cards in the pairing dict
                 two_card_rank = rank
-        return three_card_rank + (two_card_rank/100) #Return a value with the two-card grouping as a decimal that
-                                                     #allows easy comparison when the three-card grouping is the same in both hands
-                                                     #e.g., 8's over 5's is returned as 8.05, which would beat 8's over 2's (8.05 > 8.02)
+        return three_card_rank + (two_card_rank/100) # Return a value with the two-card grouping as a decimal that
+                                                     # allows easy comparison when the three-card grouping is the same in both hands
+                                                     # e.g., 8's over 5's is returned as 8.05, which would beat 8's over 2's (8.05 > 8.02)
     else:
         return False
 
 #-------------------------------------------------------------------
 def isThreeOfAKind(hand):
-    pairings = checkPairings(hand)  #Get dict of rank / counts
+    pairings = checkPairings(hand)  # Get dict of rank / counts
 
-    if len(pairings) == 3:  #Three of a kind will have one rank with three values, and two more with one each, for a total of three ranks in the list
+    if len(pairings) == 3:  # Three of a kind will have one rank with three values, and two more with one each, for a total of three ranks in the list
         for rank in pairings:
-            if pairings[rank] == 3:   #If that rank has three cards in the pairing dict
+            if pairings[rank] == 3:   # If that rank has three cards in the pairing dict
                 return rank
 
     return False
 
 #-------------------------------------------------------------------
 def isTwoPair(hand):
-    pairings = checkPairings(hand)  #Get dict of rank / counts
+    pairings = checkPairings(hand)  # Get dict of rank / counts
 
-    if len(pairings) == 3 and not isThreeOfAKind(hand):  #Two pair will have three pairings, two with two cards each, and one with one card
+    if len(pairings) == 3 and not isThreeOfAKind(hand):  # Two pair will have three pairings, two with two cards each, and one with one card
         ranks = list(pairings.keys())
         my_pairs = []
         for rank in ranks:
             if pairings[rank] == 2:
                 my_pairs.append(rank)
 
-        return my_pairs[0] + my_pairs[1]/100
+        return my_pairs[0] + my_pairs[1]/100    # Return a value with the lower-valued pair as a decimal that
+                                                # allows easy comparison when the higher-value pair is the same in both hands
+                                                # e.g., 8's and 5's is returned as 8.05, which would beat 8's and 2's (8.05 > 8.02)
     else:
         return False
 
 #-------------------------------------------------------------------
 def isOnePair(hand):
-    pairings = checkPairings(hand)  #Get dict of rank / counts
+    pairings = checkPairings(hand)  # Get dict of rank / counts
 
-    if len(pairings) == 4:  #One pair will have one rank with two values, and three more with one each, for a total of four ranks in the list
+    if len(pairings) == 4:  # One pair will have one rank with two values, and three more with one each, for a total of four ranks in the list
         for rank in pairings:
-            if pairings[rank] == 2:   #If that rank has two cards in the pairing dict
+            if pairings[rank] == 2:   # If that rank has two cards in the pairing dict
                 return rank
 
     return False
@@ -203,11 +205,8 @@ def getHandRankAndValue(hand):
 def whoWon(hands):
     global NUM_PLAYERS
 
-    # Returns a  list of lists of the form [ [rank,value] [rank,value] ] for all hands
+    # Build a list of lists of the form [ [rank,value] [rank,value] ] for all hands
     player_results = [ getHandRankAndValue(hands[player]) for player in range(NUM_PLAYERS) ]
-
-    #print(hands)
-    #print(player_results)
 
     # Determine the highest rank of any hands
     highest_rank = max(player[0] for player in player_results)
