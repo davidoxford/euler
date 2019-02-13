@@ -2,6 +2,7 @@
 # David Oxford - 2/8/2019
 # https://github.com/davidoxford/euler/tree/master/poker
 #
+#-------------------------------------------------------------------
 # Project Euler Problem 54
 # https://projecteuler.net/problem=54
 #
@@ -10,7 +11,8 @@
 # 5C AD 5D AC 9C 7C 5H 8D TD KS
 # and determine how many hands each player won. This implementation allows
 # for an arbitrary number of players rather than just two.
-
+#-------------------------------------------------------------------
+#
 # Assumes all hands have a clear winner (no ties)
 # Assumes all hands are well formed (no input data checking)
 # Assumes there are at least as many hands per row as NUM_PLAYERS
