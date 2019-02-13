@@ -263,6 +263,7 @@ def getHandRankAndValue(hand):
 
 #-------------------------------------------------------------------
 def whoWon(hands):
+    # Returns the player number of the player with the winning hand
     # hands is a list of lists of the form:
     # [ [(7, 'C'), (5, 'D'), (10, 'H'), (9, 'S'), (3, 'S')]
     #   [(8 ,'C'), (4, 'S'), (13, 'C'), (3, 'H'), (2, 'S')] ]
