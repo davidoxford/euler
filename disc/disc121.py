@@ -1,6 +1,11 @@
 #-------------------------------------------------------------------
-# Problem 121 - David Oxford - 2/10/2019
+# David Oxford - 2/10/2019
+# https://github.com/davidoxford/euler/tree/master/disc
+#
 #-------------------------------------------------------------------
+# Project Euler Problem 121
+# https://projecteuler.net/problem=121
+#
 # A bag contains one red disc and one blue disc. In a game of chance a player takes a disc at random and its
 # colour is noted. After each turn the disc is returned to the bag, an extra red disc is added, and another disc is taken at random.
 #
@@ -12,22 +17,17 @@
 #  the example given the player actually wins £9.
 #
 # Find the maximum prize fund that should be allocated to a single game in which fifteen turns are played.
-
-# 438   total wins out of 1000000 games played.
-# 446   total wins out of 1000000 games played.
-# 477   total wins out of 1000000 games played.
-# 441   total wins out of 1000000 games played.
-# 4386  total wins out of 10000000 games of 15 picks played.
-# 4450  total wins out of 10000000 games of 15 picks played.
-# 4441  total wins out of 10000000 games of 15 picks played.
-
+#-------------------------------------------------------------------
+#
+# Initial approach is to do a Monte Carlo simulation. This is a slow, estimation-based approach and non-optimal
+#
 #-------------------------------------------------------------------
 def pickDisc(bag):
     pick = random.randrange(len(bag))
     return bag[pick]
 
 #-------------------------------------------------------------------
-def playGame(NUM_PICKS):
+def playGame(num_picks):
     # Define "constants"
     RED = 0
     BLUE = 1
@@ -36,25 +36,17 @@ def playGame(NUM_PICKS):
     bag = [RED, BLUE]
     total_blues = 0
 
-    for play in range(NUM_PICKS):
+    for play in range(num_picks):
         pick = pickDisc(bag)
         if pick == BLUE:
             total_blues += 1
-            #print("Player picked blue")
-        else:
-            pass
-            #print("Player picked red")
 
         bag.append(RED)
 
-    if total_blues > NUM_PICKS/2:
+    if total_blues > num_picks/2:
         return(1)
-        #print('Player wins!')
     else:
         return(0)
-        #print('Player loses again!')
-
-    #print (total_blues, 'total blue discs drawn in', NUM_PLAYS, 'plays.')
 
 #-------------------------------------------------------------------
 import random
