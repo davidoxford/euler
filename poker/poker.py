@@ -1,8 +1,12 @@
 #-------------------------------------------------------------------
-# Problem 54 - David Oxford - 2/8/2019
+# Project Euler Problem 54 - David Oxford - 2/8/2019
+# https://projecteuler.net/problem=54
 #-------------------------------------------------------------------
 
 def cardVal(card_num):
+    # Determine value for a given card, converting ten through ace to 10 - 14
+    # card_num is 2-9, T, J, Q, K, or A
+
     if card_num ==   'T':
         return 10
     elif card_num == 'J':
@@ -18,6 +22,9 @@ def cardVal(card_num):
 
 #-------------------------------------------------------------------
 def isFlush(hand):
+    # Return the value of the hand if it is a flush, otherwise False
+    # hand is of the form: [(7, 'H'), (6, 'H'), (5, 'H'), (14, 'H'), (3, 'H')]
+
     first_card = hand[0]
     first_card_rank = first_card[0] # Get value of the first (highest) card
 
@@ -30,6 +37,9 @@ def isFlush(hand):
 
 #-------------------------------------------------------------------
 def isStraight(hand):
+    # Return the value of the hand if it is a straight, otherwise False
+    # hand is of the form: [(7, 'C'), (6, 'D'), (5, 'H'), (4, 'D'), (3, 'S')]
+
     first_card = hand[0]
     first_card_rank = first_card[0] # Get value of the first (highest) card
 
@@ -43,6 +53,9 @@ def isStraight(hand):
 
 #-------------------------------------------------------------------
 def isStraightFlush(hand):
+    # Return the value of the hand if it is a straight flush, otherwise False
+    # hand is of the form: [(7, 'C'), (6, 'C'), (5, 'C'), (4, 'C'), (3, 'C')]
+
     first_card = hand[0]        # Look at the first card
     first_card_rank = first_card[0]
 
@@ -53,6 +66,9 @@ def isStraightFlush(hand):
 
 #-------------------------------------------------------------------
 def isRoyalFlush(hand):
+    # Return the value of the hand if it is a royal flush, otherwise False
+    # hand is of the form: [(11, 'H'), (14, 'H'), (13, 'H'), (12, 'H'), (10, 'H')]
+
     first_card = hand[0]        # Look at the first card
     if first_card[0] != 14:     # If the rank of the first card isn't 14 (Ace), it's not a royal flush
         return False
@@ -64,7 +80,11 @@ def isRoyalFlush(hand):
 
 #-------------------------------------------------------------------
 def checkPairings(hand):
-    ranks = [card[0] for card in hand]  # Get list of ranks of current hand
+    # Return a dict of ranks and counts of those ranks for the given hand
+    # hand is of the form: [(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
+    # Return value for this sample would be {7:1, 6:1, 5:2, 3:1}, i.e., a pair of 5's
+
+    ranks = [card[0] for card in hand]  # Get list of ranks of current hand (e.g., [7,6,5,5,3])
 
     rank_counts = {ranks[0] : 1}  # Count the first card
     for x in range(1, len(ranks)):  # Loop through the remaining card ranks
@@ -78,6 +98,9 @@ def checkPairings(hand):
 
 #-------------------------------------------------------------------
 def isFourOfAKind(hand):
+    # Return the value of the hand if it is a four of a kind, otherwise False
+    # hand is of the form: [(5, 'C'), (5, 'S'), (5, 'H'), (5, 'D'), (3, 'S')]
+
     pairings = checkPairings(hand)  # Get dict of rank / counts
 
     for rank in pairings:
@@ -88,6 +111,10 @@ def isFourOfAKind(hand):
 
 #-------------------------------------------------------------------
 def isFullHouse(hand):
+    # Return the value of the hand if it is a full house, otherwise False
+    # hand is of the form: [(7, 'C'), (7, 'D'), (5, 'H'), (5, 'D'), (7, 'S')]
+    # Return value is of the form <three-card-pair-value>.<two-card-pairing-value>, e.g., 7.05 for 7,7,7,5,5
+
     pairings = checkPairings(hand)  # Get dict of rank / counts
 
     if len(pairings) == 2:  # Full house will have two pairings, one with three cards, and one with two cards
@@ -104,6 +131,9 @@ def isFullHouse(hand):
 
 #-------------------------------------------------------------------
 def isThreeOfAKind(hand):
+    # Return the value of the hand if it is three of a kind, otherwise False
+    # hand is of the form: [(7, 'C'), (5, 'D'), (5, 'H'), (5, 'S'), (3, 'S')]
+
     pairings = checkPairings(hand)  # Get dict of rank / counts
 
     if len(pairings) == 3:  # Three of a kind will have one rank with three values, and two more with one each, for a total of three ranks in the list
@@ -115,6 +145,10 @@ def isThreeOfAKind(hand):
 
 #-------------------------------------------------------------------
 def isTwoPair(hand):
+    # Return the value of the hand if it is two pair, otherwise False
+    # hand is of the form: [(7, 'C'), (7, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
+    # Return value is of the form <high-pair-value>.<low-pair-value>, e.g., 7.05 for 7,7,5,5,3
+
     pairings = checkPairings(hand)  # Get dict of rank / counts
 
     if len(pairings) == 3 and not isThreeOfAKind(hand):  # Two pair will have three pairings, two with two cards each, and one with one card
@@ -132,6 +166,9 @@ def isTwoPair(hand):
 
 #-------------------------------------------------------------------
 def isOnePair(hand):
+    # Return the value of the hand if it is a pair, otherwise False
+    # hand is of the form: [(7, 'C'), (5, 'D'), (5, 'H'), (9, 'S'), (3, 'S')]
+
     pairings = checkPairings(hand)  # Get dict of rank / counts
 
     if len(pairings) == 4:  # One pair will have one rank with two values, and three more with one each, for a total of four ranks in the list
@@ -143,22 +180,30 @@ def isOnePair(hand):
 
 #-------------------------------------------------------------------
 def highestCard(hands):
+    # Returns the player number (index of hands) with the highest card from a list of hands
+    # hands is a list of lists of the form:
+    # [ [(14, 'C'), (10, 'S'), (7, 'D'), (5, 'D'), (3, 'S')],
+    #   [(14, 'S'), (10, 'C'), (9, 'H'), (8, 'C'), (3, 'S')] ]
     # Assumes that there is a clear winner. Ties will return an arbitrary winner.
 
-    # Build list of ranks for each hand
+    # Build list of lists of ranks for each hand
+    # e.g., [[14, 10, 7, 5, 3], [14, 10, 9, 8, 3]]
     ranks = []
     for x in range(len(hands)):
-        ranklist = [card[0] for card in hands[x]]
+        ranklist = [card[0] for card in hands[x]]   # e.g., [14, 10, 7, 5, 3]
         ranks.append(ranklist)
 
-    best_card = max(hand for hand in ranks)
-    best_hand = ranks.index(best_card)
+    best_hand = max(hand for hand in ranks)     # Determine which of the lists of ranks is highest
+                                                # max() will search down the list till it finds the highest one
+    player_with_best_hand = ranks.index(best_hand)
 
-    return best_hand
+    return player_with_best_hand
 
 #-------------------------------------------------------------------
 def getHandRankAndValue(hand):
     # Return a list of the form [Hand Rank, Hand Value]
+    # hand is of the form: [(7, 'C'), (5, 'D'), (5, 'H'), (9, 'S'), (3, 'S')]
+    # This would return [2, 5], being a pair of 5's
     # Hand ranks:
     # 1 : High Card
     # 2 : One Pair
@@ -203,6 +248,10 @@ def getHandRankAndValue(hand):
 
 #-------------------------------------------------------------------
 def whoWon(hands):
+    # hands is a list of lists of the form:
+    # [ [(7, 'C'), (5, 'D'), (10, 'H'), (9, 'S'), (3, 'S')]
+    #   [(8 ,'C'), (4, 'S'), (13, 'C'), (3, 'H'), (2, 'S')] ]
+
     global NUM_PLAYERS
 
     # Build a list of lists of the form [ [rank,value] [rank,value] ] for all hands
@@ -247,7 +296,7 @@ def main(game_file):
     score = [ 0 for x in range(NUM_PLAYERS)]
 
     f = open(game_file)
-    for game in f:
+    for game in f:      # Read each line as an indvidual game
 
         raw_hand=[]
 
@@ -262,7 +311,7 @@ def main(game_file):
 
         hands=[ [] for x in range(len(raw_hand))]  #Initialize the hands list to the total number of players
 
-        # Build hands as list of tuples of the form: [[(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
+        # Build hands as list of tuples of the form: [(7, 'C'), (6, 'D'), (5, 'H'), (5, 'D'), (3, 'S')]
         for player in range(len(raw_hand)):
             for card in raw_hand[player]:
                 c1 = cardVal(card[0:1])         # First character is the rank (value) of the card. Assign number 2-14 (Ace = 14)
@@ -274,13 +323,13 @@ def main(game_file):
             hands[hand_num].sort(reverse=True)
 
         winner = whoWon(hands)
-        score[winner] = score[winner] + 1   # Increment score of winning player
+        score[winner] = score[winner] + 1   # Increment score count of winning player
 
     f.close()
 
     # Report results
     for player in range(NUM_PLAYERS):
-        print('Player', player+1, 'won', score[player], 'hands.')
+        print('Player', player+1, 'won', score[player], 'hands.')   # Add 1 to player number to account for 0-based counting
 
 #-------------------------------------------------------------------
 
