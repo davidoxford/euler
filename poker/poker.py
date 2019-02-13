@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------
 # David Oxford - 2/8/2019
-# https://github.com/davidoxford/euler/blob/master/poker/poker.py
+# https://github.com/davidoxford/euler/tree/master/poker
 #
 # Project Euler Problem 54
 # https://projecteuler.net/problem=54
