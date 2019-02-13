@@ -1,8 +1,30 @@
 #-------------------------------------------------------------------
-# Problem 349 - David Oxford - 2/9/2019
+# David Oxford - 2/9/2019
+# https://github.com/davidoxford/euler/tree/master/ant
+#
+#-------------------------------------------------------------------
+# Project Euler Problem 349
+# https://projecteuler.net/problem=349
+#
+# An ant moves on a regular grid of squares that are coloured either black or white.
+# The ant is always oriented in one of the cardinal directions (left, right, up or down) and moves from square to adjacent square according to the following rules:
+# - if it is on a black square, it flips the colour of the square to white, rotates 90 degrees counterclockwise and moves forward one square.
+# - if it is on a white square, it flips the colour of the square to black, rotates 90 degrees clockwise and moves forward one square.
+#
+# Starting with a grid that is entirely white, how many squares are black after 1018 moves of the ant?
+#-------------------------------------------------------------------
+#
+# Current implementation plays the game with minimal regard to the structure. The ant progress from upper right to
+# lower left (if origin is in upper left, y increasing downward), so the starting point is set to near the upper right
+# corner. Current implementation allows for ~ 10^6 moves on a 20,000 x 20,000 grids.
+#
+# Next step will be to account for the repeating structure of the moves and only track the necessary grid data, minimizing
+# the size of "grid" and thereby significantly reducing computational complexity, allowing for more moves to be calculated.
+#
 #-------------------------------------------------------------------
 
 def move():
+    global direction
     global xpos
     global ypos
 
@@ -32,12 +54,18 @@ def turn(whichway):
 
 #-------------------------------------------------------------------
 def onWhite():
+    global xpos
+    global ypos
+
     grid[xpos][ypos] = 1    # Turn black
     turn('CW')
     move()
 
 #-------------------------------------------------------------------
 def onBlack():
+    global xpos
+    global ypos
+
     grid[xpos][ypos] = 0    # Turn white
     turn('CCW')
     move()
@@ -46,17 +74,16 @@ def onBlack():
 print('Initializing...')
 
 # Set playing grid size
-rows = 20000
-cols = 20000
+rows = 2000
+cols = 2000
 
 total_plays = 1000000
-
+total_plays = 10
 # Initialize rows x cols grid
 # 0 = white, 1 = black
 grid = [ [0 for x in range( cols )] for y in range( rows ) ]
 
-# Initialize globals for starting location to approx
-# center of grid, facing 1 (of 4, e.g., North)
+# Initialize starting location to upper right corner, facing 1 (of 4, e.g., North)
 xpos = cols - 50
 ypos = 50
 direction = 1
@@ -89,30 +116,11 @@ for play in range(total_plays):
     if ypos < miny:
         miny = ypos
 
+    # Print progress in 10% increments
     cur_play += 1
-    if cur_play % tenths == 0:
-        pct_done = (cur_play / total_plays) * 100
-        print(int(pct_done), "%")
-
-
-
-    #print('[',xpos, ',', ypos, ']')
-    #for row in range(rows):
-    #    disp_row = str(row) + '|'
-    #    for col in range(cols):
-    #        disp_row = disp_row +' ' + str(grid[row][col])
-    #    print(disp_row)
-
-    #print ('   -------------------')
-    #print ('   0 1 2 3 4 5 6 7 8 9')
-    #print ('-----')
-
-#print(grid[3][5])
-#print(grid[4][5])
-#print(grid[4][6])
-#print(grid[3][6])
-#print(grid[2][5])
-#print(grid[9][8])
+    #if cur_play % tenths == 0:
+    #    pct_done = (cur_play / total_plays) * 100
+    #    print(int(pct_done), "%")
 
 total_blacks = 0
 for row in range(rows):
