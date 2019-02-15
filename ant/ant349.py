@@ -14,12 +14,10 @@
 # Starting with a grid that is entirely white, how many squares are black after 1018 moves of the ant?
 #-------------------------------------------------------------------
 #
-# Current implementation plays the game with minimal regard to the structure. The ant progress from upper right to
-# lower left (if origin is in upper left, y increasing downward), so the starting point is set to near the upper right
-# corner. Current implementation allows for ~ 10^6 moves on a 20,000 x 20,000 grids.
-#
-# Next step will be to account for the repeating structure of the moves and only track the necessary grid data, minimizing
-# the size of "grid" and thereby significantly reducing computational complexity, allowing for more moves to be calculated.
+# The problem is approached in two parts. First part (initial 11,000 moves or so) simulates the actual moves made to count
+# how many squares are made black.  Somewhere in there, the movement becomes a 104-move cycle, so the second phase is to
+# determine how many blacks are added per cycle, and then multiply by the number of cycles to get the remaining additional
+# blacks.
 #
 #-------------------------------------------------------------------
 
@@ -68,42 +66,34 @@ def onBlack():
 
 #-------------------------------------------------------------------
 def reCenter():
+    # This function is not used in the final implementation of the solution. It was created for an
+    # interim solution where the grid "followed" the ant, allowing a much smaller grid to be used.
+    # This worked fine, but was still too computationally intensive to solve the given 10^18 problem.
+
     global xpos, ypos, grid
     global rows, cols
 
-    center_x = int(cols/2)
-    center_y = int(rows/2)
+    center_x = cols // 2
+    center_y = rows // 2
 
     delta_x = center_x - xpos
     delta_y = center_y - ypos
 
-    #print('delta_x: ', delta_x)
-    #print('delta_y', delta_y)
-
-    #for y in range(rows):
-    #    for x in range(cols):
-    #        print('grid(',x,',',y,') =', grid[x][y])
-
     # Initialize a new grid
     newgrid = [ [0 for x in range( cols )] for y in range( rows ) ]
 
+    # Populate new grid with black / white info from the old grid
     for y in range(rows):
         for x in range(cols):
             if (x - delta_x) in range(0,cols) and (y - delta_y) in range(0,rows):
                 newgrid[x][y] = grid[x - delta_x][y - delta_y]
-    #            print('newgrid(',x,',',y,') = grid(',x - delta_x,',',y - delta_y,') =', newgrid[x][y])
 
-    #print('New center: [',center_x,',',center_y,']')
-
-    #print(grid)
-    #print(newgrid)
-
+    # Implement new grid and place ant back in the center
     grid = newgrid
     xpos = center_x
     ypos = center_y
 
 #-------------------------------------------------------------------
-print('Initializing...')
 
 # Set the total number of plays
 total_plays = 1000000000000000000
@@ -132,17 +122,13 @@ grid = [ [0 for x in range( cols )] for y in range( rows ) ]
 # Initialize starting location to approximate grid center, facing 1 (of 4, e.g., North)
 xpos = cols // 2
 ypos = rows // 2
-#print('Starting at: [',xpos,',',ypos,']')
 direction = 1
 
 # Initialize counter of total black squares
 total_blacks = 0
 
-# Initialize counter of total plays
+# Initialize counter of total plays. This allows confirmation that the total number of moves was the expected number
 cur_play = 0
-tenths = int(total_plays / 10)
-
-print('Beginning run...')
 
 # Execute the random motion phase
 for play in range(phase_one_plays):
@@ -159,11 +145,6 @@ for play in range(phase_one_plays):
 
     cur_play += 1
 
-    # Print progress in 10% increments
-    #if cur_play % tenths == 0:
-    #    pct_done = (cur_play / total_plays) * 100
-    #    print(int(pct_done), "%")
-
 # Run a single cycle to determine how many blacks are added in a cycle (spoiler: 12)
 additional_blacks = 0
 for moves in range (cycle_size):
@@ -178,14 +159,13 @@ for moves in range (cycle_size):
         onBlack()
         additional_blacks -= 1   # We flipped the square to white
 
+# Multiply the number of cycles by the number of blacks flipped per cycle to get the total number of new
+# new blacks, and add those to the overall total
 total_blacks += (additional_blacks * phase_two_plays)
+
+# Add additional moves accounted for by the above logic
 cur_play += phase_two_plays * cycle_size
 
-
-print('Total blacks: ', total_blacks)
-#print('Ending position [', xpos, ',', ypos, ']')
+# May I have the enevelope with the results, please?
 print('Total plays:', cur_play)
-#print('X max and min:', maxx, minx)
-#print('Y max and min:', maxy, miny)
-
-reCenter()
+print('Total blacks: ', total_blacks)
