@@ -105,46 +105,49 @@ def reCenter():
 #-------------------------------------------------------------------
 print('Initializing...')
 
+# Set the total number of plays
+total_plays = 1000000000000000000
+
 # Set playing grid size
 rows = 151
 cols = 151
 
-total_plays = 1000000
-total_plays = 11510
-total_plays = 1151000
+cycle_size = 104    # Number of steps in repeating cycle once the ant takes off, determined through testing
+random_motion_limit = 11000  # Number of moves to ensure ant has entered repeating cycle
 
-if total_plays >= 10000:
-    phase_one_plays = 10000
-    phase_two_plays = total_plays - 10000
+if total_plays >= random_motion_limit:
+    remainder = (total_plays - random_motion_limit) % cycle_size    # Determine how many moves beyond the
+                                                                    # initial phase are required to make the
+                                                                    # remaining cycle phase an even multiple of cycle_size
+    phase_one_plays = random_motion_limit + remainder
+    phase_two_plays = (total_plays - phase_one_plays) // cycle_size  # Determine how many cycles are in the cycle phase
 else:
     phase_one_plays = total_plays
     phase_two_plays = 0
-
 
 # Initialize rows x cols grid
 # 0 = white, 1 = black
 grid = [ [0 for x in range( cols )] for y in range( rows ) ]
 
-# Initialize starting location to upper right corner, facing 1 (of 4, e.g., North)
-xpos = int(cols/2)
-ypos = int(rows/2)
-print('Starting at: [',xpos,',',ypos,']')
+# Initialize starting location to approximate grid center, facing 1 (of 4, e.g., North)
+xpos = cols // 2
+ypos = rows // 2
+#print('Starting at: [',xpos,',',ypos,']')
 direction = 1
 
+# Initialize counter of total black squares
 total_blacks = 0
 
-minx = xpos
-miny = ypos
-maxx = xpos
-maxy = ypos
-
+# Initialize counter of total plays
 cur_play = 0
 tenths = int(total_plays / 10)
 
 print('Beginning run...')
 
+# Execute the random motion phase
 for play in range(phase_one_plays):
     if xpos >= cols or xpos < 0 or ypos >= rows or ypos < 0:
+        print ('Error: exceeded boundary of grid at (',xpos,',',ypos,')')
         break
 
     if grid[xpos][ypos] == 0:    # On white
@@ -154,45 +157,30 @@ for play in range(phase_one_plays):
         onBlack()
         total_blacks -= 1   # We flipped the square to white
 
-    #if xpos > maxx:
-    #    maxx = xpos
-    #if xpos < minx:
-    #    minx = xpos
-    #if ypos > maxy:
-    #    maxy = ypos
-    #if ypos < miny:
-    #    miny = ypos
+    cur_play += 1
 
     # Print progress in 10% increments
-    cur_play += 1
     #if cur_play % tenths == 0:
     #    pct_done = (cur_play / total_plays) * 100
     #    print(int(pct_done), "%")
 
-reCenter()
-cycle_count = 0
-for play in range(phase_two_plays):
-    cycle_count += 1
-
+# Run a single cycle to determine how many blacks are added in a cycle (spoiler: 12)
+additional_blacks = 0
+for moves in range (cycle_size):
     if xpos >= cols or xpos < 0 or ypos >= rows or ypos < 0:
+        print ('Error: exceeded boundary of grid at (',xpos,',',ypos,')')
         break
 
     if grid[xpos][ypos] == 0:    # On white
         onWhite()
-        total_blacks += 1   # We flipped the square to black
+        additional_blacks += 1   # We flipped the square to black
     else:
         onBlack()
-        total_blacks -= 1   # We flipped the square to white
+        additional_blacks -= 1   # We flipped the square to white
 
-    if cycle_count == 3000:
-        cycle_count = 0
-        reCenter()
+total_blacks += (additional_blacks * phase_two_plays)
+cur_play += phase_two_plays * cycle_size
 
-    cur_play += 1
-
-#total_blacks = 0
-#for row in range(rows):
-#    total_blacks += sum(grid[row])
 
 print('Total blacks: ', total_blacks)
 #print('Ending position [', xpos, ',', ypos, ']')
